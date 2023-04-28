@@ -1,14 +1,14 @@
 # Teaching chatGPT to write langchain code, written with langchain
 
 
-Being consistent with my vision that execution should be zero marginal cost in the future, I was bothered when chatGPT couldn't write langchain code.
+Being consistent with my vision that execution should be zero marginal cost and zero friction in the future, I was bothered when chatGPT couldn't even write langchain code.
 
 So I fed a langchain one-pager into chatGPT, \
 which generated the langchain code, \
 which can be fed more langchain documentation, \
 which can generate more langchain code. \
-I did not write a single line of code \
-Life is beautiful again
+I did not write a single line of code. \
+Life is beautiful again.
 
 Written at 2AM, but serious takeaways:
 
