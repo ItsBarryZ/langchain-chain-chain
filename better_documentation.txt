@@ -1,0 +1,366 @@
+For this example, we will use the `ConversationChain` with `MemoryType.CHAT_MESSAGE`.
+
+
+
+This is a basic summary of the LangChain Quickstart Guide. It covers the installation, environment setup, building a language model application with LLMs, using prompt templates, combining LLMs and prompts in multi-step workflows, using agents dynamically based on user input, adding state to chains and agents with memory, and building a language model application with chat models.
+"""This code installs the Langchain package from either pip or conda-forge. It is a tool for creating language chains."""
+bash
+pip install langchain
+# or
+conda install langchain -c conda-forge
+
+"""This code installs the OpenAI package using pip, a package manager for Python."""
+bash
+pip install openai
+
+"""This code sets the OPENAI_API_KEY environment variable to the given value."""
+bash
+export OPENAI_API_KEY="..."
+
+"""This code imports the os module and sets the OPENAI_API_KEY environment variable to a given value."""
+python
+import os
+os.environ["OPENAI_API_KEY"] = "..."
+
+"""
+This module imports the OpenAI library from the langchain.llms package.
+"""
+python
+from langchain.llms import OpenAI
+
+"""This code initializes an OpenAI object with a temperature of 0.9, stored in the variable llm."""
+python
+llm = OpenAI(temperature=0.9)
+
+"""
+This function llm(text) prints out a suggested company name for a company that makes colorful socks. The input text should describe the company. 
+"""
+python
+text = "What would be a good company name for a company that makes colorful socks?"
+print(llm(text))
+
+"""This function prints "Feetful of Fun" to the console when called."""
+pycon
+Feetful of Fun
+
+"""This function creates a PromptTemplate object which takes in a list of input variables and a template string which is used to create prompts for a given product."""
+python
+from langchain.prompts import PromptTemplate
+
+prompt = PromptTemplate(
+    input_variables=["product"],
+    template="What is a good name for a company that makes {product}?",
+)
+
+"""Print a formatted string with the product name set to "colorful socks"."""
+python
+print(prompt.format(product="colorful socks"))
+
+"""This function provides a suggestion for a company name for a business that manufactures colorful socks."""
+pycon
+What is a good name for a company that makes colorful socks?
+
+"""This code instantiates an OpenAI language model with a temperature of 0.9 and a PromptTemplate with an input variable of "product" and a template of "What is a good name for a company that makes {product}?". """
+python
+from langchain.prompts import PromptTemplate
+from langchain.llms import OpenAI
+
+llm = OpenAI(temperature=0.9)
+prompt = PromptTemplate(
+    input_variables=["product"],
+    template="What is a good name for a company that makes {product}?",
+)
+
+"""This code creates an instance of the LLMChain class from the langchain.chains module, with the given llm and prompt parameters."""
+python
+from langchain.chains import LLMChain
+chain = LLMChain(llm=llm, prompt=prompt)
+
+"""Runs the command 'colorful socks' on the chain, and returns the string 'Socktastic!' as the output. """
+python
+chain.run("colorful socks")
+# -> '\n\nSocktastic!'
+
+"""This code will install the google-search-results Python package using pip."""
+bash
+pip install google-search-results
+
+"""This code imports the os module and sets the environment variable "SERPAPI_API_KEY" to a given value. """
+python
+import os
+os.environ["SERPAPI_API_KEY"] = "..."
+
+"""
+This code initializes an agent with a set of tools, language model, and type of agent. It then runs the agent with a given test string. 
+"""
+python
+from langchain.agents import load_tools
+from langchain.agents import initialize_agent
+from langchain.agents import AgentType
+from langchain.llms import OpenAI
+
+# First, let's load the language model we're going to use to control the agent.
+llm = OpenAI(temperature=0)
+
+# Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
+tools = load_tools(["serpapi", "llm-math"], llm=llm)
+
+
+# Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
+agent = initialize_agent(tools, llm, agent=AgentType.ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+
+# Now let's test it out!
+agent.run("What was the high temperature in SF yesterday in Fahrenheit? What is that number raised to the .023 power?")
+
+"""This function uses a chain of AgentExecutor actions to find the high temperature in San Francisco yesterday in Fahrenheit raised to the .023 power. It searches for the temperature, uses a calculator to raise it to the .023 power, and returns the final answer."""
+pycon
+> Entering new AgentExecutor chain...
+ I need to find the temperature first, then use the calculator to raise it to the .023 power.
+Action: Search
+Action Input: "High temperature in SF yesterday"
+Observation: San Francisco Temperature Yesterday. Maximum temperature yesterday: 57 °F (at 1:56 pm) Minimum temperature yesterday: 49 °F (at 1:56 am) Average temperature ...
+Thought: I now have the temperature, so I can use the calculator to raise it to the .023 power.
+Action: Calculator
+Action Input: 57^.023
+Observation: Answer: 1.0974509573251117
+
+Thought: I now know the final answer
+Final Answer: The high temperature in SF yesterday in Fahrenheit raised to the .023 power is 1.0974509573251117.
+
+> Finished chain.
+
+"""This code creates an OpenAI object with a temperature of 0, and a ConversationChain object using the OpenAI object. It then predicts a response to the input "Hi there!" and prints the output."""
+python
+from langchain import OpenAI, ConversationChain
+
+llm = OpenAI(temperature=0)
+conversation = ConversationChain(llm=llm, verbose=True)
+
+output = conversation.predict(input="Hi there!")
+print(output)
+
+"""This function initiates a friendly conversation between a human and an AI. The AI will provide lots of specific details from its context and truthfully say it does not know the answer to a question if it does not know. The current conversation is "Hello! How are you today?" """
+pycon
+> Entering new chain...
+Prompt after formatting:
+The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
+
+Current conversation:
+
+Human: Hi there!
+AI:
+
+> Finished chain.
+' Hello! How are you today?'
+
+"""This function takes in an input string and returns a predicted conversation response based on the input string"""
+python
+output = conversation.predict(input="I'm doing well! Just having a conversation with an AI.")
+print(output)
+
+This function initiates a conversation between a human and an AI. The AI will provide specific details from its context and truthfully say it does not know the answer to a question if it does not.
+pycon
+> Entering new chain...
+Prompt after formatting:
+The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know.
+
+Current conversation:
+
+Human: Hi there!
+AI:  Hello! How are you today?
+Human: I'm doing well! Just having a conversation with an AI.
+AI:
+
+> Finished chain.
+" That's great! What would you like to talk about?"
+
+"""
+This code creates an instance of ChatOpenAI and imports the AIMessage, HumanMessage and SystemMessage classes from the langchain.schema module. The instance is created with a temperature of 0.
+"""
+python
+from langchain.chat_models import ChatOpenAI
+from langchain.schema import (
+    AIMessage,
+    HumanMessage,
+    SystemMessage
+)
+
+chat = ChatOpenAI(temperature=0)
+
+"""This function takes a HumanMessage object as an argument and returns an AIMessage object with a translated sentence from English to French as its content."""
+python
+chat([HumanMessage(content="Translate this sentence from English to French. I love programming.")])
+# -> AIMessage(content="J'aime programmer.", additional_kwargs={})
+
+"""This function takes a list of messages as an argument and returns an AIMessage object in response to each message in the list. The AIMessage object contains the translated content from English to French and any additional keyword arguments provided."""
+python
+messages = [
+    SystemMessage(content="You are a helpful assistant that translates English to French."),
+    HumanMessage(content="Translate this sentence from English to French. I love programming.")
+]
+chat(messages)
+# -> AIMessage(content="J'aime programmer.", additional_kwargs={})
+
+"""
+This function generates a LLMResult object from a list of batches of messages. Each batch contains a SystemMessage and a HumanMessage, and the result contains a list of ChatGenerations with the translated text, generation info and AIMessage content. The LLMResult also contains token usage information.
+"""
+python
+batch_messages = [
+    [
+        SystemMessage(content="You are a helpful assistant that translates English to French."),
+        HumanMessage(content="Translate this sentence from English to French. I love programming.")
+    ],
+    [
+        SystemMessage(content="You are a helpful assistant that translates English to French."),
+        HumanMessage(content="Translate this sentence from English to French. I love artificial intelligence.")
+    ],
+]
+result = chat.generate(batch_messages)
+result
+# -> LLMResult(generations=[[ChatGeneration(text="J'aime programmer.", generation_info=None, message=AIMessage(content="J'aime programmer.", additional_kwargs={}))], [ChatGeneration(text="J'aime l'intelligence artificielle.", generation_info=None, message=AIMessage(content="J'aime l'intelligence artificielle.", additional_kwargs={}))]], llm_output={'token_usage': {'prompt_tokens': 71, 'completion_tokens': 18, 'total_tokens': 89}})
+
+"""
+Returns a dictionary containing the token usage for a given result.llm_output, with keys 'prompt_tokens', 'completion_tokens', and 'total_tokens' and corresponding values. 
+"""
+
+result.llm_output['token_usage']
+# -> {'prompt_tokens': 71, 'completion_tokens': 18, 'total_tokens': 89}
+
+"""
+This code instantiates a ChatOpenAI object with a temperature of 0, creates two prompt templates (a SystemMessagePromptTemplate and a HumanMessagePromptTemplate) and combines them into a ChatPromptTemplate. It then formats the prompt with specific input and output languages and a text string and passes it to the chat object, returning an AIMessage object.
+"""
+python
+from langchain.chat_models import ChatOpenAI
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
+
+chat = ChatOpenAI(temperature=0)
+
+template="You are a helpful assistant that translates {input_language} to {output_language}."
+system_message_prompt = SystemMessagePromptTemplate.from_template(template)
+human_template="{text}"
+human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+
+chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+
+# get a chat completion from the formatted messages
+chat(chat_prompt.format_prompt(input_language="English", output_language="French", text="I love programming.").to_messages())
+# -> AIMessage(content="J'aime programmer.", additional_kwargs={})
+
+"""This code creates an instance of ChatOpenAI with a given temperature and two prompt templates. It then creates an LLMChain object with the chat instance and the two prompt templates, and runs the chain with given input language, output language, and text. The result is a translated output in the given output language."""
+python
+from langchain.chat_models import ChatOpenAI
+from langchain import LLMChain
+from langchain.prompts.chat import (
+    ChatPromptTemplate,
+    SystemMessagePromptTemplate,
+    HumanMessagePromptTemplate,
+)
+
+chat = ChatOpenAI(temperature=0)
+
+template="You are a helpful assistant that translates {input_language} to {output_language}."
+system_message_prompt = SystemMessagePromptTemplate.from_template(template)
+human_template="{text}"
+human_message_prompt = HumanMessagePromptTemplate.from_template(human_template)
+chat_prompt = ChatPromptTemplate.from_messages([system_message_prompt, human_message_prompt])
+
+chain = LLMChain(llm=chat, prompt=chat_prompt)
+chain.run(input_language="English", output_language="French", text="I love programming.")
+# -> "J'aime programmer."
+
+"""
+This code initializes an agent with a language model, tools, and agent type. The agent is then tested with a sample query. 
+"""
+python
+from langchain.agents import load_tools
+from langchain.agents import initialize_agent
+from langchain.agents import AgentType
+from langchain.chat_models import ChatOpenAI
+from langchain.llms import OpenAI
+
+# First, let's load the language model we're going to use to control the agent.
+chat = ChatOpenAI(temperature=0)
+
+# Next, let's load some tools to use. Note that the `llm-math` tool uses an LLM, so we need to pass that in.
+llm = OpenAI(temperature=0)
+tools = load_tools(["serpapi", "llm-math"], llm=llm)
+
+
+# Finally, let's initialize an agent with the tools, the language model, and the type of agent we want to use.
+agent = initialize_agent(tools, chat, agent=AgentType.CHAT_ZERO_SHOT_REACT_DESCRIPTION, verbose=True)
+
+# Now let's test it out!
+agent.run("Who is Olivia Wilde's boyfriend? What is his current age raised to the 0.23 power?")
+
+This function uses a search engine and a calculator to find the answer to 29 raised to the 0.23 power, which is '2.169459462491557'.
+pycon
+
+> Entering new AgentExecutor chain...
+Thought: I need to use a search engine to find Olivia Wilde's boyfriend and a calculator to raise his age to the 0.23 power.
+Action:
+{
+  "action": "Search",
+  "action_input": "Olivia Wilde boyfriend"
+}
+
+Observation: Sudeikis and Wilde's relationship ended in November 2020. Wilde was publicly served with court documents regarding child custody while she was presenting Don't Worry Darling at CinemaCon 2022. In January 2021, Wilde began dating singer Harry Styles after meeting during the filming of Don't Worry Darling.
+Thought:I need to use a search engine to find Harry Styles' current age.
+Action:
+{
+  "action": "Search",
+  "action_input": "Harry Styles age"
+}
+
+Observation: 29 years
+Thought:Now I need to calculate 29 raised to the 0.23 power.
+Action:
+{
+  "action": "Calculator",
+  "action_input": "29^0.23"
+}
+
+Observation: Answer: 2.169459462491557
+
+Thought:I now know the final answer.
+Final Answer: 2.169459462491557
+
+> Finished chain.
+'2.169459462491557'
+
+"""
+This module imports the necessary components to create a ConversationChain object, which is used to generate responses to a human input. The ConversationChain object is initialized with a ChatPromptTemplate, ChatOpenAI language model and ConversationBufferMemory, and is used to generate responses to a given input.
+"""
+python
+from langchain.prompts import (
+    ChatPromptTemplate, 
+    MessagesPlaceholder, 
+    SystemMessagePromptTemplate, 
+    HumanMessagePromptTemplate
+)
+from langchain.chains import ConversationChain
+from langchain.chat_models import ChatOpenAI
+from langchain.memory import ConversationBufferMemory
+
+prompt = ChatPromptTemplate.from_messages([
+    SystemMessagePromptTemplate.from_template("The following is a friendly conversation between a human and an AI. The AI is talkative and provides lots of specific details from its context. If the AI does not know the answer to a question, it truthfully says it does not know."),
+    MessagesPlaceholder(variable_name="history"),
+    HumanMessagePromptTemplate.from_template("{input}")
+])
+
+llm = ChatOpenAI(temperature=0)
+memory = ConversationBufferMemory(return_messages=True)
+conversation = ConversationChain(memory=memory, prompt=prompt, llm=llm)
+
+conversation.predict(input="Hi there!")
+# -> 'Hello! How can I assist you today?'
+
+
+conversation.predict(input="I'm doing well! Just having a conversation with an AI.")
+# -> "That sounds like fun! I'm happy to chat with you. Is there anything specific you'd like to talk about?"
+
+conversation.predict(input="Tell me about yourself.")
+# -> "Sure! I am an AI language model created by OpenAI. I was trained on a large dataset of text from the internet, which allows me to understand and generate human-like language. I can answer questions, provide information, and even have conversations like this one. Is there anything else you'd like to know about me?"
