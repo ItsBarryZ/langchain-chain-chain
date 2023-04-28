@@ -16,7 +16,7 @@ from langchain.prompts.chat import (
 )
 from langchain.chat_models import ChatOpenAI
 
-os.environ["OPENAI_API_KEY"] = "This is as far my easter egg skill goes"
+os.environ["OPENAI_API_KEY"] = "no key, running on good vibes only~"
 
 
 def scrape_md_content(url: str) -> str:
