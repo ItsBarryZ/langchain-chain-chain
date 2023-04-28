@@ -69,10 +69,6 @@ def process_text_and_generate_docstrings(text, temperature=0.5):
         result.append(docstring)
         result.append(code)
 
-    print("-" * 100)
-    print(result)
-    print("-" * 100)
-
     with open("better_documentation.txt", "w") as file:
         file.write("\n".join(result))
 
