@@ -1,7 +1,7 @@
 # Teaching chatGPT to write langchain code, written with langchain
 
 
-Being consistent with my vision that execution should be zero marginal cost and zero friction in the future, I was bothered when chatGPT couldn't even write langchain code.
+I was bothered when chatGPT couldn't even write langchain code.
 
 So I fed a langchain one-pager into chatGPT, \
 which generated the langchain code, \
